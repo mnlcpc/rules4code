@@ -1,10 +1,10 @@
 # rules4code
 
-A clever CLI tool to sync configuration files, rules, and AI agent instructions across your projects using simple plain text files.
+A CLI tool to download and install configuration files, rules, and AI agent instructions across projects.
 
 ## Philosophy
 
-Keep your configuration wisdom in one place and distribute it effortlessly. No complex mappings needed - the directory structure IS the configuration map.
+Keep your configuration wisdom in one place and distribute it effortlessly. No complex mappings needed, the directory structure IS the configuration map.
 
 ## Features
 
@@ -16,23 +16,17 @@ Keep your configuration wisdom in one place and distribute it effortlessly. No c
 
 ## Installation
 
-### Global installation (recommended):
-
-```bash
-npm install -g .
-```
-
-### Run directly with npx (when published):
-
-```bash
-npx rules4code
-```
-
 ### Local development:
 
 ```bash
 npm install
 node cli.js
+```
+
+### Global installation (recommended):
+
+```bash
+npm install -g .
 ```
 
 ## Usage
@@ -43,6 +37,12 @@ Navigate to any project directory and run:
 rules4code
 # or use the short alias
 r4c
+```
+
+### Or run directly with npx (⚠️ YET TO BE PUBLISHED):
+
+```bash
+npx rules4code
 ```
 
 The CLI will:
@@ -60,12 +60,7 @@ Instead of maintaining mapping files, the directory structure in `/rules` direct
 
 ### Categories Auto-Detected
 
-Categories are automatically derived from top-level folder names:
-
-- `.claude/` → "Claude" category
-- `.cursor/` → "Cursor" category
-- `.eslintrc.d/` → "Eslintrc.d" category
-- `.vscode/` → "Vscode" category
+Categories are automatically derived from top-level folder names
 
 ## Adding New Rules
 
@@ -92,13 +87,12 @@ Categories are automatically derived from top-level folder names:
 - **Arrow keys** - Navigate options
 - **Space** - Toggle file selection
 - **Enter** - Confirm selection
-- **ESC** - Go back to previous menu (category selection)
 - **'a'** - Toggle all files in category
 
 ## Status Indicators
 
-- **Pre-selected** - Files already installed and synced
 - **Not selected** - Files not installed or different from repo
+- **Pre-selected** - Files already installed and synced
 - **⚠️ warning** - Existing file with different content (will be backed up)
 
 ## Git Workflow
@@ -107,39 +101,3 @@ Categories are automatically derived from top-level folder names:
 2. Add/modify rules in the `/rules` directory
 3. Commit and push changes
 4. In any project, run `rules4code` (or `r4c`) to sync latest configurations
-
-## Examples
-
-### Claude Code Setup
-
-```
-rules/.claude/
-├── agents/
-│   ├── code-reviewer.md
-│   ├── junior-engineer.md
-│   └── documentation-writer.md
-└── rules/
-    ├── coding-standards.md
-    └── security-guidelines.md
-```
-
-### Multi-tool Configuration
-
-```
-rules/
-├── .claude/agents/ai-helper.md
-├── .cursor/rules/cursor-rules.txt
-├── .eslintrc.d/strict-rules.json
-├── .prettierrc.json
-└── .vscode/settings.json
-```
-
-## Why rules4code?
-
-- **Intuitive** - No learning curve, directory structure explains itself
-- **Scalable** - Works with any tool that uses configuration files
-- **Maintainable** - No mapping files to keep in sync
-- **Discoverable** - Easy to see what configurations are available
-- **Safe** - Always backs up existing files before changes
-
-Perfect for teams sharing AI agent configurations, linting rules, IDE settings, and any other plain text configurations across projects.
