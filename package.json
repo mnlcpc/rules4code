@@ -1,0 +1,33 @@
+{
+  "name": "rules4code",
+  "version": "1.0.0",
+  "description": "CLI tool to sync configuration files and rules across projects",
+  "main": "cli.js",
+  "bin": {
+    "rules4code": "./cli.js",
+    "r4c": "./cli.js"
+  },
+  "scripts": {
+    "start": "node cli.js",
+    "test": "echo \"No tests yet\" && exit 0"
+  },
+  "keywords": [
+    "cli",
+    "config",
+    "rules",
+    "sync",
+    "eslint",
+    "claude",
+    "cursor"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "inquirer": "^8.2.6",
+    "chalk": "^4.1.2",
+    "fs-extra": "^11.1.1"
+  },
+  "engines": {
+    "node": ">=14"
+  }
+}
