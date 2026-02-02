@@ -1,4 +1,4 @@
-# Hands
+# Hands 🙌🧠
 
 A CLI tool to download and install configuration files, rules, and AI agent instructions across projects.
 
