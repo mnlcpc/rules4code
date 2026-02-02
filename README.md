@@ -1,20 +1,24 @@
-# Hands 🙌🧠
+# Hands
 
-A CLI tool to manage and distribute Claude Code components (skills, commands, MCP servers, hooks) across projects.
+A CLI tool to manage and distribute Claude Code components across projects.
 
-## Philosophy
+## What It Does
 
-Keep your configuration wisdom in one place and distribute it effortlessly. No complex mappings needed, the directory structure IS the configuration map.
+Hands manages three types of components:
 
-## Features
+- **Skills** — Specialized instruction sets with optional dependency declarations
+- **Agents** — Sub-agent definitions with specific personas and tool access
+- **Hooks** — Event-triggered commands (notifications, linting, etc.)
 
-- **Zero-config approach** - File paths in `/rules` mirror installation paths
-- **Category-based navigation** - Organized by tool (.claude, .cursor, .eslintrc, etc.)
-- **Smart preselection** - Already installed files are pre-selected
-- **Conflict detection** - Clear warnings for files with different content
-- **Safe backups** - Existing files backed up as `.local` before overwrite
+Skills can declare dependencies on MCP servers, agents, and other skills. Hands automatically resolves and installs these dependencies.
 
 ## Installation
+
+### Global (recommended):
+
+```bash
+npm install -g .
+```
 
 ### Local development:
 
@@ -23,79 +27,124 @@ npm install
 node cli.js
 ```
 
-### Global installation (recommended):
-
-```bash
-npm install -g .
-```
-
 ## Usage
 
-Navigate to any project directory and run:
+Navigate to any project and run:
 
 ```bash
 hands
 ```
 
-### Or run directly with npx:
-
-```bash
-npx hands
-```
-
 The CLI will:
 
-1. Show categories of available configurations
-2. Let you select a category (Claude, Cursor, ESLint, etc.)
-3. Show files with status indicators and smart preselection
-4. Install selected files with conflict handling
+1. Show all available skills, agents, and hooks
+2. Let you select what to install or remove
+3. Resolve and install skill dependencies automatically
+4. Detect already-installed components and offer updates
 
-## How It Works
+## Adding Components
 
-### Simple Structure = Simple Config
+### Skills
 
-Instead of maintaining mapping files, the directory structure in `/rules` directly mirrors where files should be installed
+Create a directory under `rules/.claude/skills/<name>/` with a `SKILL.md` file:
 
-### Categories Auto-Detected
+```
+rules/.claude/skills/my-skill/
+  SKILL.md           # Skill instructions (required)
+  manifest.json      # Dependency declarations (optional)
+```
 
-Categories are automatically derived from top-level folder names
+The `manifest.json` declares what the skill needs:
 
-## Adding New Rules
+```json
+{
+  "description": "What the skill does",
+  "agent": "agent-name",
+  "mcpServers": ["server-name"],
+  "tools": ["mcp__server__tool_name"],
+  "skills": ["other-skill"]
+}
+```
 
-### For Claude Code agents:
+All fields are optional. Skills without a manifest have no dependencies.
 
-1. Create `rules/.claude/agents/my-agent.md`
-2. Write your agent instructions
-3. Run `hands` in any project to install
+### Agents
 
-### For ESLint configurations:
+Create `rules/.claude/agents/<name>.md`:
 
-1. Create `rules/.eslintrc.d/my-rules.json`
-2. Add your ESLint rules
-3. Install with `hands`
+```markdown
+---
+name: My Agent
+allowed-tools: mcp__server__*
+---
 
-### For any tool:
+Agent instructions here.
+```
 
-1. Create the exact directory structure in `rules/`
-2. Add your configuration files
-3. They'll appear in the appropriate category automatically
+### Hooks
 
-## Navigation
+Create `rules/.claude/hooks/<name>.json`:
 
-- **Arrow keys** - Navigate options
-- **Space** - Toggle file selection
-- **Enter** - Confirm selection
-- **'a'** - Toggle all files in category
+```json
+{
+  "Stop": [
+    {
+      "matcher": ".*",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "say 'Task completed'"
+        }
+      ]
+    }
+  ]
+}
+```
+
+### MCP Servers (dependency pool)
+
+Create `rules/.claude/mcp-servers/<name>.json`:
+
+```json
+{
+  "type": "http",
+  "url": "https://example.com/mcp",
+  "headers": {
+    "Authorization": "Bearer ${API_KEY}"
+  }
+}
+```
+
+MCP servers are not shown in the selection UI. They are automatically installed when a selected skill declares them as a dependency.
 
 ## Status Indicators
 
-- **Not selected** - Files not installed or different from repo
-- **Pre-selected** - Files already installed and synced
-- **Warning** - Existing file with different content (will be backed up)
+- `[✓]` Installed and up to date
+- `[~]` Outdated (update available)
+- `[ ]` Available (not installed)
+- `⚠️`  Missing environment variables
+
+## Dependency Resolution
+
+When you select a skill that has a `manifest.json`:
+
+1. Required MCP servers are queued for installation
+2. Required agents are auto-selected
+3. Required skills are auto-selected (recursive)
+4. You're shown a summary and asked to confirm
+5. Everything is installed together
+
+When you deselect a skill, orphaned dependencies are identified and you're asked whether to remove them.
+
+## Navigation
+
+- **Arrow keys** — Navigate options
+- **Space** — Toggle selection
+- **Enter** — Confirm
 
 ## Git Workflow
 
 1. Store this repo on GitHub
-2. Add/modify rules in the `/rules` directory
-3. Commit and push changes
-4. In any project, run `hands` to sync latest configurations
+2. Add or modify components in `rules/.claude/`
+3. Commit and push
+4. In any project, run `hands` to sync

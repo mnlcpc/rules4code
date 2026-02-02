@@ -1,7 +1,7 @@
 {
   "name": "hands",
-  "version": "2.0.0",
-  "description": "CLI tool to manage Claude Code components (skills, commands, MCP servers, hooks) across projects",
+  "version": "3.0.0",
+  "description": "CLI tool to manage Claude Code components (skills, agents, hooks) with dependency resolution",
   "main": "cli.js",
   "bin": {
     "hands": "./cli.js"
